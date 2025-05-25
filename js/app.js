@@ -161,3 +161,22 @@ function deleteClothes(){
         });
     }
 }
+
+function colorPalette(){
+    let colorOptions = document.querySelectorAll(".color-option");
+
+    for(let i=0; i<colorOptions.length; i++){
+        colorOptions[i].addEventListener("click",() =>{
+        
+            //모든 옵션의 선택 표시 제거
+            for(let j=0; j<colorOptions.length; j++){
+                colorOptions[j].classList.remove("selected");
+            }
+            //클릭한 옵션만 선택 표시 추기
+            colorOptions[i].classList.add("selected");
+
+            // 선택된 색상 값을 hidden input에 저장 (미완)
+            document.getElementById("color");
+        });
+    }
+}

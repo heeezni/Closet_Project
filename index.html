@@ -11,6 +11,7 @@
         addEventListener("load",() => {
             showView("homeView");
             saveClothesForm();
+            colorPalette();
             renderCloset();
             deleteClothes();
             
@@ -89,7 +90,14 @@
                 <option value="가을">가을</option>
                 <option value="겨울">겨울</option>
             </select><br>
-            <input type="text" id="color" placeholder="색상" required><br>
+            <label>색상 선택:</label>
+            <div id="colorPalette">
+            <div class="color-option" data-color="red" style="background-color: red;"></div>
+            <div class="color-option" data-color="blue" style="background-color: blue;"></div>
+            <div class="color-option" data-color="green" style="background-color: green;"></div>
+            </div>
+            <!-- 선택된 값 저장용 -->
+            <input type="hidden" id="color" name="color" value="">       
             <button type="submit">저장</button>
         </form>
         <button id="goHomeFromAdd">목록으로</button>
@@ -103,5 +111,3 @@
     </section>
 </body>
 </html>
-
-<!-- 컬러 팔레트 만들기부터! -->
