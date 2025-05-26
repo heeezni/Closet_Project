@@ -84,15 +84,3 @@ form button[type="submit"]:hover {
   flex-wrap: wrap;
   justify-content: center;
 }
-.color-option {
-  width: 30px;
-  height: 30px;
-  border-radius: 5px;
-  margin: 5px;
-  display: inline-block;
-  cursor: pointer;
-  border: 2px solid transparent;
-}
-.color-option.selected {
-  border: 2px solid black;
-}

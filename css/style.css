@@ -82,7 +82,7 @@ button:hover {
 .clothing-card {
   background-color: #fff;
   width: 240px;
-  padding: 12px;
+  padding: 10px;
   border: 1px solid #e0e0e0;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
@@ -90,19 +90,19 @@ button:hover {
 }
 
 .clothing-card img {
-  width: 100%;
+  width: 150px;
   border-radius: 6px;
   margin-bottom: 10px;
 }
 
 .clothing-card h3 {
-  font-size: 18px;
+  font-size: 20px;
   margin: 6px 0;
 }
 
 .clothing-card p {
   margin: 4px 0;
-  font-size: 14px;
+  font-size: 16px;
   color: #555;
 }
 
@@ -114,4 +114,64 @@ button:hover {
 
 .delete_bt:hover {
   background-color: #e05252;
+}
+
+.color-option {
+  width: 45px;
+  height: 45px;
+  border-radius: 5px;
+  margin: 1px;
+  display: inline-block;
+  cursor: pointer; 
+  /* 마우스 올렸을 때 손가락 모양 */
+  border: 1px solid #555;
+  position: relative;
+  
+}
+.color-option.selected::after {
+  content: "✔"; /* 체크모양 */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  color: white; /* 배경색에 따라 조절 가능 */
+  text-shadow: 1px 1px 1px black;
+}
+.color-option:hover{
+  border-radius: 8px;
+  filter: brightness(1.5);
+}
+
+.clothing-img {
+  width: 150px;      
+  height: auto;  
+  display: block;
+  margin: 0 auto;     /* 가운데 정렬 (선택사항) */
+  border-radius: 8px; /* 둥근 이미지 효과 (선택사항) */
+  object-fit: cover;  /* 잘릴 수 있음 but 예쁘게 맞춤 */
+}
+
+.coordi-card {
+  width:200px;
+  height: 200px;
+  overflow: hidden;
+  padding: 10px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  margin: 5px;
+  border-radius: 8px;
+  text-align: center;
+  background-color: #fdfdfd;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.coordi-card:hover {
+  outline: 2px solid dodgerblue;
+  transform: scale(1.03);
+  transition: all 0.2s ease;
+}
+.coordi-card.selected {
+  outline: 3px solid tomato;
+  background-color: #fff3f0;
 }

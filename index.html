@@ -28,12 +28,17 @@
             });
             document.getElementById("goCoordiView").addEventListener("click",() => {
                 showView("coordiView");
+                renderForCoordi();
+                renderCoordiList();
             });
             document.getElementById("goHomeFromAdd").addEventListener("click",() => {
                 showView("homeView");
             });
             document.getElementById("goHomeFromcoordi").addEventListener("click",() => {
                 showView("homeView");
+            });
+            document.getElementById("saveCoordi").addEventListener("click", () => {
+                myCoordi();
             });
 
             
@@ -50,18 +55,51 @@
         <div id="filterBox">
         <select id="filterCategory">
             <option value="">카테고리 전체</option>
-            <option value="상의">상의</option>
-            <option value="하의">하의</option>
-            <option value="아우터">아우터</option>
-            <option value="신발">신발</option>
-            <option value="기타">기타</option>
+            <option value="상의">👕 상의</option>
+            <option value="하의">👖 하의</option>
+            <option value="원피스/스커트">👗 원피스/스커트</option>
+            <option value="아우터">🧥 아우터</option>
+            <option value="신발">👢 신발</option>
+            <option value="기타">👜 기타</option>
         </select>
         <select id="filterSeason">
             <option value="">계절 전체</option>
-            <option value="봄">봄</option>
-            <option value="여름">여름</option>
-            <option value="가을">가을</option>
-            <option value="겨울">겨울</option>
+            <option value="봄">🌷 봄</option>
+            <option value="여름">☀️ 여름</option>
+            <option value="가을">🍂 가을</option>
+            <option value="겨울">☃️ 겨울</option>
+        </select>
+        <select id="filterColor">
+            <option value="">컬러 전체</option>
+            <option value="블랙" style="background-color: black; color: white;">블랙</option>
+            <option value="차콜" style="background-color: rgb(61, 58, 58); color: white;">차콜</option>
+            <option value="그레이" style="background-color: grey; color: white;">그레이</option>
+            <option value="화이트" style="background-color: white;">화이트</option>
+            <option value="베이지" style="background-color: rgb(219, 200, 164);">베이지</option>
+            <option value="크림" style="background-color: beige;"> 크림</option>
+            <option value="브라운" style="background-color: brown; color: white;">브라운</option>
+            <option value="빨강" style="background-color: red; color: white;">빨강</option>
+            <option value="주황" style="background-color: orange;">주황</option>
+            <option value="노랑" style="background-color: yellow;">노랑</option>
+            <option value="민트" style="background-color: rgb(159, 243, 215);">민트</option>
+            <option value="초록" style="background-color: green; color: white;">초록</option>
+            <option value="하늘" style="background-color: rgb(116, 207, 243);">하늘</option>
+            <option value="파랑" style="background-color: blue; color: white;">파랑</option>
+            <option value="네이비" style="background-color: navy; color: white;">네이비</option>
+            <option value="핑크" style="background-color: pink;">핑크</option>
+            <option value="핫핑크" style="background-color: hotpink; color: white;">핫핑크</option>
+            <option value="보라" style="background-color: purple; color: white;">보라</option>
+            <option value="multi">🌈멀티컬러</option>
+        </select>
+        <select id="filterPattern">
+        <option value="">패턴 전체</option>
+        <option value="무지">무지</option>
+        <option value="스트라이프">스트라이프</option>
+        <option value="체크">체크</option>
+        <option value="도트">도트</option>
+        <option value="플라워">플라워</option>
+        <option value="애니멀">애니멀</option>
+        <option value="기타패턴">기타패턴</option>
         </select>
         <button id="searchFilter">검색</button>
         <button id="resetFilter">초기화</button>
@@ -77,13 +115,16 @@
         <form id="addForm">
             <input type="file" id="imageInput" accept=".jpg,.png" required><br>
             <input type="text" id="clothesname" placeholder="옷 이름" required><br>
+            <label>카테고리:</label>
             <select id="category">
                 <option value="상의">상의</option>
                 <option value="하의">하의</option>
+                <option value="원피스/스커트">원피스/스커트</option>
                 <option value="아우터">아우터</option>
                 <option value="신발">신발</option>
-                <option value="기타">기타 소품</option>
+                <option value="기타">패션 소품</option>
             </select><br>
+            <label>계절:</label>
             <select id="season">
                 <option value="봄">봄</option>
                 <option value="여름">여름</option>
@@ -92,12 +133,42 @@
             </select><br>
             <label>색상 선택:</label>
             <div id="colorPalette">
-            <div class="color-option" data-color="red" style="background-color: red;"></div>
-            <div class="color-option" data-color="blue" style="background-color: blue;"></div>
-            <div class="color-option" data-color="green" style="background-color: green;"></div>
+            <div class="color-option" data-color="블랙" style="background-color: black;"></div>
+            <div class="color-option" data-color="차콜" style="background-color: rgb(78, 76, 76)"></div>
+            <div class="color-option" data-color="그레이" style="background-color: grey;"></div>
+            <div class="color-option" data-color="화이트" style="background-color: white;"></div>
+            <div class="color-option" data-color="베이지" style="background-color: rgb(219, 200, 164);"></div>
+            <br>
+            <div class="color-option" data-color="크림" style="background-color: beige;"></div>
+            <div class="color-option" data-color="브라운" style="background-color: rgb(126, 83, 3);"></div>
+            <div class="color-option" data-color="카키" style="background-color: rgb(105, 121, 95);"></div>
+            <div class="color-option" data-color="빨강" style="background-color: red;"></div>
+            <div class="color-option" data-color="주황" style="background-color: orange;"></div>
+            <br>
+            <div class="color-option" data-color="노랑" style="background-color: yellow;"></div>
+            <div class="color-option" data-color="민트" style="background-color: rgb(159, 243, 215);"></div>
+            <div class="color-option" data-color="초록" style="background-color: green;"></div>
+            <div class="color-option" data-color="하늘" style="background-color: rgb(116, 207, 243);"></div>
+            <div class="color-option" data-color="파랑" style="background-color: blue;"></div>
+            <br>
+            <div class="color-option" data-color="네이비" style="background-color: navy;"></div>
+            <div class="color-option" data-color="핑크" style="background-color: pink;"></div>
+            <div class="color-option" data-color="핫핑크" style="background-color: hotpink;"></div>
+            <div class="color-option" data-color="보라" style="background-color: purple;"></div>
+            <div class="color-option" data-color="멀티컬러" style="background: linear-gradient(to right, rgb(233, 233, 153), rgb(248, 79, 79), rgb(138, 138, 250), rgb(107, 212, 107));"></div>
             </div>
             <!-- 선택된 값 저장용 -->
-            <input type="hidden" id="color" name="color" value="">       
+            <input type="hidden" id="color" name="color" value="">
+            <label>패턴:</label>
+            <select id="pattern">
+                <option value="무지">무지</option>
+                <option value="스트라이프">스트라이프</option>
+                <option value="체크">체크</option>
+                <option value="도트">도트</option>
+                <option value="플라워">플라워</option>
+                <option value="애니멀">애니멀</option>
+                <option value="기타패턴">기타패턴</option>
+            </select>
             <button type="submit">저장</button>
         </form>
         <button id="goHomeFromAdd">목록으로</button>
@@ -106,7 +177,12 @@
     <!-- 코디조합 화면 -->
     <section id="coordiView">
         <h2>코디 만들기</h2>
-        <p>(코디들 보여주기)</p>
+        <div id="coordiCloset"></div>
+
+        <h3>저장된 코디 목록</h3>
+        <div id="coordiList"></div>
+
+        <button id="saveCoordi">코디저장</button>
         <button id="goHomeFromcoordi">목록으로</button>
     </section>
 </body>
