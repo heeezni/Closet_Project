@@ -1,0 +1,18 @@
+# node 모듈들 (라이브러리)
+node_modules/
+
+# 빌드 결과물
+dist/
+build/
+
+# 환경변수 파일
+.env
+
+# mac 쓰레기 파일
+.DS_Store
+
+# VS Code 설정 (선택)
+.vscode/
+
+# 로그 파일
+*.log
