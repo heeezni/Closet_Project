@@ -132,6 +132,223 @@ function renderCloset(){
     deleteClothes();
 }
 
+function colorPalette(){
+    let colorOptions = document.querySelectorAll(".color-option");
+
+    for(let i=0; i<colorOptions.length; i++){
+        colorOptions[i].addEventListener("click",() =>{
+        
+            //모든 옵션의 선택 표시 제거
+            for(let j=0; j<colorOptions.length; j++){
+                colorOptions[j].classList.remove("selected");
+            }
+            //클릭한 옵션만 선택 표시 추기
+            colorOptions[i].classList.add("selected");
+
+            // 선택된 색상 값을 hidden input에 저장 
+            document.getElementById("color").value = colorOptions[i].dataset.color;
+        });
+    }
+}
+
+function renderForCoordi(){
+    let coordiSpace = document.getElementById("coordiCloset");
+    coordiSpace.innerHTML = "";
+
+    storeData = localStorage.getItem("closet");
+    if(storeData==null){    
+        closet=[];
+    } else {
+        closet=JSON.parse(storeData);
+    }
+
+    for(let i=0; i<closet.length; i++){
+        let item = closet[i];
+        
+        let card = document.createElement("div");
+        card.className="coordi-card"; // className: 중복 적용가능
+        card.dataset.id = item.id;
+
+        card.innerHTML = `<img src="${item.image}" alt="${item.name}" class="clothing-img">
+        <p>${item.name}</p>`;
+        card.addEventListener("click", function(){
+            card.classList.toggle("selected"); //toggle 켜기/끄기 자동 전환
+        });
+
+        coordiSpace.appendChild(card);
+    }
+}
+
+function myCoordi(){
+    let select = document.querySelectorAll(".coordi-card.selected");
+
+
+    if(select.length == 0){
+        alert("코디할 옷을 선택해주세요!");
+        return;
+    }
+    
+    //코디 이름 짓기
+    let title = prompt("코디 이름을 입력하세요:");
+    if(title == null || title.trim() == ""){ //trim()공백만 입력했을 때 방지
+        alert("코디 이름을 입력해야 저장됩니다.");
+        return;
+    }
+
+    //선택한 코디 카드들의 id
+    let selectIds = [];
+    for(let i=0; i<select.length; i++){
+        let id = parseInt(select[i].dataset.id);
+        selectIds.push(id);
+    }
+
+    let coordiList = [];
+
+    //기존 저장된 코디 가져오기 (없으면 빈 배열)
+    let coordiData = localStorage.getItem("coordiList");
+        if(coordiData==null){
+            coordiList=[];
+        } else {
+            coordiList=JSON.parse(coordiData);
+        }
+    
+    //새 코디 조합 객체 만들기
+    let newCoordi = {
+        id : Date.now(),
+        title : title,
+        items : selectIds
+    };
+    
+    coordiList.push(newCoordi);
+    localStorage.setItem("coordiList", JSON.stringify(coordiList));
+
+    alert("코디가 저장되었습니다!")
+    
+    //??  초기화 화면 보여주기
+}
+
+function renderCoordiPreview(){
+    //console.log("renderCoordiPreview 실행됨!");
+    let coordiContainer = document.getElementById("coordiList");
+    coordiContainer.innerHTML="";
+
+    let data = localStorage.getItem("coordiList");
+    //console.log(JSON.parse(localStorage.getItem("coordiList")));
+
+    if(data==null){
+        coordiContainer.innerHTML="<p>저장된 코디가 없습니다.</P>"
+        return;
+    }
+
+    //옷장 데이터 불러와야 이미지 연결 가능
+    let closetData = JSON.parse(localStorage.getItem("closet")) || [];
+    //localStorage에 저장된 문자열이 없으면 → 빈 배열로 대체
+    let coordiList = JSON.parse(data);
+
+    for(let i=0; i<coordiList.length; i++){
+        let coordi = coordiList[i]; //코디 한 세트
+
+        //console.log(coordi);
+
+        // 1. 코디 카드
+        let coordiCard = document.createElement("div"); //코디카드
+        coordiCard.className = "coordi-result";
+        
+        // 2. 코디 제목
+        let title = document.createElement("h4");
+        title.innerHTML = coordi.title;
+        coordiCard.appendChild(title);
+
+        // 3. 코디 미리보기 박스 + 카테고리별 박스 만들기
+        let {preview, slots} = coordiSlots(); // ✅ 비구조화 할당
+        /*let result = CoordiSlots();
+        let preview = result.preview;
+        let slots = result.slots;*/
+
+
+        /*4. 코디에 포함된 옷들 이미지로 추가 
+        코디에 들어있는 옷 id 목록을 하나씩 꺼내서
+        실제 옷장 데이터에서 해당 id에 맞는 옷을 찾기*/
+        for(let j=0; j<coordi.items.length; j++){
+            let itemId=coordi.items[j];
+            //console.log("itemId", itemId)
+            //console.log("closetData", closetData)
+
+            let item=null;
+            for(let k=0; k<closetData.length; k++){
+                //console.log("closetData[k].id", closetData[k].id);
+
+                if(String(closetData[k].id) == String(itemId)){
+                    item = closetData[k];
+                    break;
+                }
+            }
+            if(item!==null && slots[item.category]){
+                //console.log("item", item);
+                let img = document.createElement("img");
+                img.src = item.image;
+                img.className = "clothing-img";
+                img.alt = item.name;
+                img.title = item.name;
+                
+                if(item.category == "원피스"){
+                    slots["원피스"].appendChild(img);
+                } else if(slots[item.category]){
+                    //console.log("item.category: ", item.category);
+                    //console.log("슬롯 존재여부", slots[item.category]);
+                    slots[item.category].appendChild(img);
+                }
+            }
+        }
+
+        let deleteBt = document.createElement("button");
+        deleteBt.className ="delete_coordi";
+        deleteBt.innerText ="삭제";
+        deleteBt.dataset.id = coordi.id;
+
+        // 5. 박스 붙이기
+        coordiCard.appendChild(preview);
+        coordiCard.append(deleteBt);
+
+        coordiContainer.appendChild(coordiCard);
+    }
+}
+
+function coordiSlots(){
+    let preview = document.createElement("div");
+    preview.className = "coordi-preview";
+    
+    let slots = {}; //카테고리 박스 저장용 빈 객체 선언
+
+
+    let categories = ["상의", "하의", "원피스", "아우터", "신발", "기타"];
+
+    for(let i=0; i<categories.length; i++){
+        let cate = categories[i];
+
+        let box = document.createElement("div");
+        box.className = "slot";
+        //console.dir(box);
+        box.dataset.category = cate;
+
+        if(cate == "상의") box.classList.add("top"); //box.className = "slot top"이 됨
+        if(cate == "하의") box.classList.add("bottom");
+        if(cate == "원피스") box.classList.add("onepiece");
+        if(cate == "아우터") box.classList.add("outer");
+        if(cate == "신발") box.classList.add("shoes");
+        if(cate == "기타") box.classList.add("etc");
+
+
+        preview.appendChild(box);
+        slots[cate] = box;
+    }
+
+    return{
+        preview : preview,
+        slots : slots
+    };
+}
+
 //출력한 카드 삭제
 function deleteClothes(){
     let delete_bts = document.querySelectorAll(".delete_bt"); //유사배열객체 반환
@@ -169,125 +386,35 @@ function deleteClothes(){
     }
 }
 
-function colorPalette(){
-    let colorOptions = document.querySelectorAll(".color-option");
 
-    for(let i=0; i<colorOptions.length; i++){
-        colorOptions[i].addEventListener("click",() =>{
+function deleteCoordi(){
+    let deleteBts = document.querySelectorAll(".delete_coordi"); //유사배열객체 반환
+
+    for(let i=0; i<deleteBts.length; i++){
+        deleteBts[i].addEventListener("click", function(){
+        let id = deleteBts[i].dataset.id;
+        //console.log("삭제할 코디 id: "+id);
         
-            //모든 옵션의 선택 표시 제거
-            for(let j=0; j<colorOptions.length; j++){
-                colorOptions[j].classList.remove("selected");
+        if(confirm("이 코디를 삭제하시겠습니까?")){
+            let coordiList = JSON.parse(localStorage.getItem("coordiList")) || []; 
+            
+            let newList = [];
+            for(let j=0; j<coordiList.length; j++){
+                if(String(coordiList[j].id) !== String(id)){
+                    newList.push(coordiList[j]);
+                }
             }
-            //클릭한 옵션만 선택 표시 추기
-            colorOptions[i].classList.add("selected");
 
-            // 선택된 색상 값을 hidden input에 저장 
-            document.getElementById("color").value = colorOptions[i].dataset.color;
-        });
-    }
-}
-
-function renderForCoordi(){
-    let coordiSpace = document.getElementById("coordiCloset");
-    coordiSpace.innerHTML = "";
-
-    storeData = localStorage.getItem("closet");
-    if(storeData==null){    
-        closet=[];
-    } else {
-        closet=JSON.parse(storeData);
-    }
-
-    for(let i=0; i<closet.length; i++){
-        let item = closet[i];
-        
-        let card = document.createElement("div");
-        card.className="coordi-card" // className: 중복 적용가능
-        card.dataset.id = item.id;
-
-        card.innerHTML = `<img src="${item.image}" alt="${item.name}" class="clothing-img">
-        <p>${item.name}</p>`;
-        card.addEventListener("click", function(){
-            card.classList.toggle("selected"); //toggle 켜기/끄기 자동 전환
-        });
-
-        coordiSpace.appendChild(card);
-    }
-}
-
-function myCoordi(){
-    let select = document.querySelectorAll(".coordi-card.selected");
-
-    if(select.length == 0){
-        alert("코디할 옷을 선택해주세요!");
-        return;
-    }
-    
-    //코디 이름 짓기
-    let title = prompt("코디 이름을 입력하세요:");
-    if(title == null || title.trim() == ""){ //trim()공백만 입력했을 때 방지
-        alert("코디 이름을 입력해야 저장됩니다.");
-        return;
-    }
-
-    //선택한 코디 카드들의 id
-    let selectIds = [];
-    for(let i=0; i<select.length; i++){
-        let id = parseInt(select[i].dataset.id);
-        selectIds.push(id);
-    }
-
-    //기존 저장된 코디 가져오기 (없으면 빈 배열)
-    let coordiData = localStorage.getItem("coordiList");
-
-        if(coordiData==null){
-            coordiList=[];
+            //다시 저장
+            localStorage.setItem("coordiList", JSON.stringify(newList));
+            alert("삭제되었습니다.");
+            
+            renderCoordiPreview(); //화면 다시 그리기
+            deleteCoordi(); //그로 인해 새로 생성된 버튼에 다시 이벤트 연결
         } else {
-            coordiList=JSON.parse(coordiData);
+            alert("삭제가 취소되었습니다.")
         }
-    
-    //새 코디 조합 객체 만들기
-    let newCoordi = {
-        id : Date.now(),
-        title : title,
-        items : selectIds
-    };
-    
-    coordiList.push(newCoordi);
-    localStorage.setItem("coordiList", JSON.stringify(coordiList));
-
-    alert("코디가 저장되었습니다!")
-    
-    //초기화 화면 보여주기
-}
-
-function renderCoordiList(){
-    console.log("✅ renderCoordiList 실행됨!");
-    let coordiContainer = document.getElementById("coordiList");
-    coordiContainer.innerHTML="";
-
-    let data = localStorage.getItem("coordiList");
-    if(data==null){
-        coordiContainer.innerHTML="<p>저장된 코디가 없습니다.</P>"
-        return;
+        });
     }
 
-    //옷장 데이터 불러와야 이미지 연결 가능
-    let closetData = JSON.parse(localStorage.getItem(closet));
-    let coordiList = JSON.parse(data);
-
-    for(let i=0; i<coordiList.length; i++){
-        let coordi = coordiList[i]; //코디 한 세트
-
-        console.log(coordi);
-
-        let coordiCard = document.createElement("div");
-        coordiCard.className = "coordi-result";
-        coordi.items
-        //코디카드부터 다시하기!
-
-
-
-    }
 }

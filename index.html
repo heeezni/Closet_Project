@@ -21,6 +21,8 @@
             document.getElementById("resetFilter").addEventListener("click", () => {
                 document.getElementById("filterCategory").value="";
                 document.getElementById("filterSeason").value="";
+                document.getElementById("filterColor").value="";
+                document.getElementById("filterPattern").value="";
                 renderCloset();
             });
             document.getElementById("goAddView").addEventListener("click",() => {
@@ -29,7 +31,8 @@
             document.getElementById("goCoordiView").addEventListener("click",() => {
                 showView("coordiView");
                 renderForCoordi();
-                renderCoordiList();
+                renderCoordiPreview();
+                deleteCoordi();
             });
             document.getElementById("goHomeFromAdd").addEventListener("click",() => {
                 showView("homeView");
@@ -57,7 +60,7 @@
             <option value="">카테고리 전체</option>
             <option value="상의">👕 상의</option>
             <option value="하의">👖 하의</option>
-            <option value="원피스/스커트">👗 원피스/스커트</option>
+            <option value="원피스">👗 원피스</option>
             <option value="아우터">🧥 아우터</option>
             <option value="신발">👢 신발</option>
             <option value="기타">👜 기타</option>
@@ -78,6 +81,7 @@
             <option value="베이지" style="background-color: rgb(219, 200, 164);">베이지</option>
             <option value="크림" style="background-color: beige;"> 크림</option>
             <option value="브라운" style="background-color: brown; color: white;">브라운</option>
+            <option value="카키" style="background-color: rgb(105, 121, 95); color: white;">카키</option>
             <option value="빨강" style="background-color: red; color: white;">빨강</option>
             <option value="주황" style="background-color: orange;">주황</option>
             <option value="노랑" style="background-color: yellow;">노랑</option>
@@ -89,7 +93,7 @@
             <option value="핑크" style="background-color: pink;">핑크</option>
             <option value="핫핑크" style="background-color: hotpink; color: white;">핫핑크</option>
             <option value="보라" style="background-color: purple; color: white;">보라</option>
-            <option value="multi">🌈멀티컬러</option>
+            <option value="멀티컬러">🌈멀티컬러</option>
         </select>
         <select id="filterPattern">
         <option value="">패턴 전체</option>
@@ -119,7 +123,7 @@
             <select id="category">
                 <option value="상의">상의</option>
                 <option value="하의">하의</option>
-                <option value="원피스/스커트">원피스/스커트</option>
+                <option value="원피스">원피스</option>
                 <option value="아우터">아우터</option>
                 <option value="신발">신발</option>
                 <option value="기타">패션 소품</option>
@@ -181,7 +185,6 @@
 
         <h3>저장된 코디 목록</h3>
         <div id="coordiList"></div>
-
         <button id="saveCoordi">코디저장</button>
         <button id="goHomeFromcoordi">목록으로</button>
     </section>
