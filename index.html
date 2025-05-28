@@ -136,6 +136,9 @@
                 <option value="겨울">겨울</option>
             </select><br>
             <label>색상 선택:</label>
+            <div id="selectedColorText" style="margin-top: 8px; font-weight: bold; min-height: 1.5em;">
+                선택된 색상: 없음
+            </div>
             <div id="colorPalette">
             <div class="color-option" data-color="블랙" style="background-color: black;"></div>
             <div class="color-option" data-color="차콜" style="background-color: rgb(78, 76, 76)"></div>
@@ -173,6 +176,7 @@
                 <option value="애니멀">애니멀</option>
                 <option value="기타패턴">기타패턴</option>
             </select>
+            <input type="hidden" id="edit" value="">
             <button type="submit">저장</button>
         </form>
         <button id="goHomeFromAdd">목록으로</button>

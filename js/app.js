@@ -64,11 +64,26 @@ function saveClothesForm(){
         let tx = db.transaction("clothes", "readwrite");
         let store = tx.objectStore("clothes");
 
-        store.add({name: clothesname, category, season, color, pattern, image: file });
+        let data = {
+            name: clothesname, 
+            category, 
+            season, 
+            color, 
+            pattern, 
+            image: file }
+
+            if(id){ //수정
+                data.id=parseInt(id);
+                store.put(data);
+            } else { // 새로등록
+                store.add();
+            }
 
         tx.oncomplete=function(){
-            alert("옷이 저장되었어요!");
+            alert(id? "옷 정보가 수정되었습니다.":"옷이 저장되었습니다.");
             addForm.reset(); //reset()는 <form>만 가능
+            document.getElementById("edit").value="";
+            document.getElementById("selectedColorText").innerText = "선택된 색상: 없음";
             showView("homeView");
             renderCloset();
         };
@@ -123,13 +138,14 @@ function renderCloset(){
             card.className = "clothing-card" // className: 중복 적용가능
 
             card.innerHTML = `
-            <img src="${URL.createObjectURL(item.image)}" alt="${item.name}" class="clothing-img">
+            <img src="${URL.createObjectURL(item.image)}" alt="${item.name || item.clothesname}" class="clothing-img">
             <h3>${item.name}</h3>
             <p>카테고리: ${item.category}</p>
             <p>계절: ${item.season}</p>
             <p>색상: ${item.color}</p>
             <p>패턴: ${item.pattern}</p>
-            <button class="delete_bt" data-id="${item.id}">삭제</button>`;
+            <button class="delete_bt" data-id="${item.id}">삭제</button>,
+            <button class="edit_bt" data-id="${item.id}">수정</button>`;
 
             closetList.appendChild(card);
             count++;
@@ -139,6 +155,7 @@ function renderCloset(){
             closetList.innerHTML = "<p>해당 조건에 맞는 옷이 없습니다.</p>"
         }
         deleteClothes();
+        eidtClothes();
     };
 }
 
@@ -147,16 +164,27 @@ function colorPalette(){
 
     for(let i=0; i<colorOptions.length; i++){
         colorOptions[i].addEventListener("click",()=>{
+            let isSelected = colorOptions[i].classList.contains("selected");
         
             //모든 옵션의 선택 표시 제거
             for(let j=0; j<colorOptions.length; j++){
                 colorOptions[j].classList.remove("selected");
             }
-            //클릭한 옵션만 선택 표시 추기
-            colorOptions[i].classList.add("selected");
 
-            // 선택된 색상 값을 hidden input에 저장 
-            document.getElementById("color").value = colorOptions[i].dataset.color;
+            if(isSelected){ //다시 클릭하면 선택 해제
+                document.getElementById("color").value="";
+                document.getElementById("selectedColorText").innerText = "선택된 색상: 없음";
+            } else {
+                //클릭한 옵션만 선택 표시 추기
+                colorOptions[i].classList.add("selected");
+    
+                //선택된 색상 값을 hidden input에 저장 
+                document.getElementById("color").value = colorOptions[i].dataset.color;
+    
+                //선택한 색상 텍스트 업데이트
+                document.getElementById("selectedColorText").innerText = `선택된 색상: ${colorOptions[i].dataset.color}`;
+
+            }       
         });
     }
 }
@@ -179,7 +207,7 @@ function renderForCoordi(){
             card.className="coordi-card"; // className: 중복 적용가능
             card.dataset.id = item.id;
     
-            card.innerHTML = `<img src="${URL.createObjectURL(item.image)}" alt="${item.name}" class="clothing-img">
+            card.innerHTML = `<img src="${URL.createObjectURL(item.image)}" alt="${item.name || item.clothesname}" class="clothing-img">
             <p>${item.name}</p>`;
             card.addEventListener("click", function(){
                 card.classList.toggle("selected"); //toggle 켜기/끄기 자동 전환
@@ -306,10 +334,32 @@ function renderCoordiPreview(){
                         }
                     }
                 }
-        
+                // ✅ 원피스가 포함되어 있으면 상의/하의 칸 숨기기
+                let hasOnepiece = false;
+                for (let n = 0; n < coordi.items.length; n++) {
+                    let itemId = coordi.items[n];
+                    for (let m = 0; m < closetData.length; m++) {
+                        if (String(closetData[m].id) === String(itemId) && closetData[m].category === "원피스") {
+                            hasOnepiece = true;
+                            break;
+                        }
+                    }
+                }
+                if (hasOnepiece) {
+                    if (slots["상의"]) slots["상의"].style.display = "none";
+                    if (slots["하의"]) slots["하의"].style.display = "none";
+                }
+                // 이미지 없는 슬롯 숨기기
+                let hiddenSlots = preview.querySelectorAll(".slot");
+                for (let a = 0; a < hiddenSlots.length; a++) {
+                    let img = hiddenSlots[a].querySelector("img");
+                    if (img == null) {
+                        hiddenSlots[a].style.display = "none";
+                    }
+                }
                 let deleteBt = document.createElement("button");
                 deleteBt.className ="delete_coordi";
-                deleteBt.innerText ="삭제";
+                deleteBt.innerText ="✖";
                 deleteBt.dataset.id = coordi.id;
         
                 // 5. 박스 붙이기
@@ -356,6 +406,49 @@ function coordiSlots(){
         slots : slots
     };
 }
+//출력한 카드 수정
+function eidtClothes(){
+    let editBts = document.querySelectorAll(".edit_bt");
+
+    for(let i=0; i<editBts.length; i++){
+        editBts[i].addEventListener("click", function(e){
+            let id = parseInt(e.target.dataset.id);
+
+            //IndexedDB에서 해당 옷 가져오기
+            let tx = db.transaction("clothes", "readonly");
+            let store = tx.objectStore("clothes");
+            let request = store.get(id);
+
+            request.onsuccess = function(){
+                let item = request.result;
+
+                // 등록 폼에 기존 값 채우기
+                document.getElementById("editId").value = item.id;
+                document.getElementById("clothesname").value = item.name;
+                document.getElementById("category").value = item.category;
+                document.getElementById("season").value = item.season;
+                document.getElementById("pattern").value = item.pattern;
+
+                // 색상 팔레트 반영
+                let colors = document.querySelectorAll("#colorPalette .color-option");
+                for(let j=0; j<colors.length; j++){
+                    colors[j].classList.remove("selected");
+                    if(colors[j].dataset.color == item.color){
+                        colors[j].classList.add("selected");
+                        document.getElementById("color").value = item.color;
+                        document.getElementById("selectedColorText").innerText = `선택된 색상: ${item.color}`;
+                    }
+                }
+
+                // 이미지 파일은 사용자 재선택이 필요하므로 안내
+                alert("이미지는 보안상 다시 선택해 주세요");
+
+                showView("addView");
+            };
+        });
+    }
+}
+
 
 //출력한 카드 삭제
 function deleteClothes(){
@@ -380,7 +473,6 @@ function deleteClothes(){
         });
     }
 }
-
 
 function deleteCoordi(){
     let deleteBts = document.querySelectorAll(".delete_coordi"); //유사배열객체 반환
