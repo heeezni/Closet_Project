@@ -6,6 +6,7 @@ body {
   margin: 0;
   padding: 20px;
   line-height: 1.6;
+  text-align: center;
 }
 
 h1, h2 {
@@ -74,14 +75,16 @@ button:hover {
 /* 옷 목록 출력 카드 스타일 */
 #closetList {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 16px;
+  overflow-x: auto; 
+  /* 마우스 옆으로 밀게 */
+  gap: 5px;
+  padding: 10px;
+  scroll-snap-type: x mandatory;
 }
 
 .clothing-card {
   background-color: #fff;
-  width: 240px;
+  width: 160px;
   padding: 10px;
   border: 1px solid #e0e0e0;
   border-radius: 12px;
@@ -90,7 +93,8 @@ button:hover {
 }
 
 .clothing-card img {
-  width: 150px;
+  height: 150px;
+  width: auto;
   border-radius: 6px;
   margin-bottom: 10px;
 }
@@ -153,6 +157,7 @@ button:hover {
 }
 
 .coordi-card {
+  scroll-snap-align: start;
   width:200px;
   height: 200px;
   overflow: hidden;

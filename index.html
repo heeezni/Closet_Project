@@ -7,12 +7,11 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="js/app.js"></script>
     <script>
-        
+
         addEventListener("load",() => {
             showView("homeView");
             saveClothesForm();
             colorPalette();
-            renderCloset();
             deleteClothes();
             
             document.getElementById("searchFilter").addEventListener("click", () => {
@@ -107,10 +106,10 @@
         </select>
         <button id="searchFilter">검색</button>
         <button id="resetFilter">초기화</button>
-        </div>
-        <div id="closetList"></div>
         <button id="goAddView"> + 옷 추가하기</button>
         <button id="goCoordiView">코디 만들기</button>
+        </div>
+        <div id="closetList"></div>
     </section>
 
     <!-- 옷 추가 화면 -->
@@ -130,6 +129,7 @@
             </select><br>
             <label>계절:</label>
             <select id="season">
+                <option value="">선택 안 함</option>
                 <option value="봄">봄</option>
                 <option value="여름">여름</option>
                 <option value="가을">가을</option>
