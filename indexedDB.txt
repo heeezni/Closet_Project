@@ -46,3 +46,4 @@ objectStore는 IndexedDB에서 데이터를 저장하는 “테이블” 같은 
 
 Base64로 저장하면 용량이 약 1.3배 증가함 → Blob/File 객체로 저장하는 게 낫다
 
+최신순부터 보여주기 store.getAll() 대신 **store.openCursor(null, 'prev')

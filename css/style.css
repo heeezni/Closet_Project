@@ -25,7 +25,7 @@ button {
   background-color: #ffc0cb;
   border: none;
   border-radius: 8px;
-  padding: 10px 14px;
+  padding: 8px 13px;
   font-weight: bold;
   color: #333;
   cursor: pointer;
@@ -34,7 +34,7 @@ button {
 }
 
 button:hover {
-  background-color: #ffaeb9;
+  background-color: #fca1ad;
 }
 
 /* 등록 폼 스타일 */
@@ -96,22 +96,41 @@ button:hover {
 }
 
 .color-option:hover{
-  filter: brightness(1.5);
+  filter: brightness(1.2);
+  outline: 3px solid #333;
 }
 
-#addView button[type="submit"] {
-  background-color: #a1e1ff;
-  color: #222;
+.button-group{
+  display: inline-block;
+  width: 230px;
+  margin: auto;
+  text-align: center;
 }
 
-#addView button[type="submit"]:hover {
-  background-color: #7dd6ff;
+.button-group button{
+  width: 100px;
+  margin: 0 3px;
 }
 
-#goHomeFromAdd {
+#filterBox select{
+  height: 35px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+#goHomeFromAdd,
+#goHomeFromcoordi,
+#resetFilter {
   background-color: #d3d3d3;
 }
 
+#goHomeFromAdd:hover,
+#goHomeFromcoordi:hover,
+#resetFilter:hover{
+  background-color: #a5a4a4;
+}
 /* 옷 목록 출력 카드 스타일 */
 #closetList {
   display: flex;
@@ -123,11 +142,17 @@ button:hover {
   align-items: stretch; /* 모든 카드 높이 맞춤 */
 }
 
+#homebts button{
+  width: 150px;
+  margin: 0 3px;
+}
+
 .clothing-card {
+  position: relative;
   background-color: #fff;
   width: 150px;
+  height: 340px;
   padding: 7px;
-  background-color: #fff;
   border: 1px solid #e0e0e0;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
@@ -155,12 +180,30 @@ button:hover {
 }
 
 .delete_bt {
-  background-color: #ff8787;
-  color: #fff;
-  margin-top: 10px;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #888;
+  transition: color 0.2s ease;
+  z-index: 10;
 }
 
 .delete_bt:hover {
+  color: tomato;
+}
+
+.edit_bt{
+  background-color: #ff8787;
+  color: #fff;
+  padding: 6px 13px;
+  margin-top: 4px;
+}
+
+.edit_bt:hover {
   background-color: #e05252;
 }
 
@@ -297,12 +340,12 @@ button:hover {
 }
 
 .slot.etc {
-  display: flex;
   flex-wrap: wrap; /* 줄바꿈 허용 */
   gap: 0px;
   align-items: flex-start;  /* 위로 정렬 */
   justify-content: flex-start; /* 왼쪽 정렬 */
 }
+
 .slot.etc img {
   width: 70px;
   height: auto;
@@ -321,6 +364,8 @@ button:hover {
 .slot.outer   { grid-area: outer; }
 .slot.shoes   { grid-area: shoes; }
 .slot.etc     { grid-area: etc; }
-.slot.onepiece { 
-  grid-area: top; 
+
+#weatherBox{
+  margin: 10px 0px; 
+  font-weight: bold;
 }
