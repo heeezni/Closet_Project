@@ -189,6 +189,11 @@ function renderForCoordi(){
     request.onsuccess = function(){
         let closet = request.result;
 
+        // 최신순 정렬 (id 기준 내림차순)
+        closet.sort(function(a, b) {
+            return b.id - a.id;
+        });
+
         for(let i=0; i<closet.length; i++){
             let item = closet[i];
             //console.log(item.name, item.category);

@@ -1,7 +1,7 @@
 function addExampleData() {
 let exampleClothes = [
         {
-          clothesname: "까리한 가방",
+          clothesname: "가방",
           category: "기타",
           season: "",
           color: "블랙",
@@ -47,6 +47,38 @@ let exampleClothes = [
           color: "화이트",
           pattern: "무지",
           image: "res/top.png"
+        },
+        {
+          clothesname: "원피스",
+          category: "원피스",
+          season: "여름",
+          color: "핑크",
+          pattern: "무지",
+          image: "res/원피스.png"
+        },
+        {
+          clothesname: "에코백",
+          category: "기타",
+          season: "",
+          color: "크림",
+          pattern: "무지",
+          image: "res/에코백.png"
+        },
+        {
+          clothesname: "가디건",
+          category: "아우터",
+          season: "가을",
+          color: "화이트",
+          pattern: "무지",
+          image: "res/가디건.png"
+        },
+        {
+          clothesname: "컨버스",
+          category: "신발",
+          season: "",
+          color: "화이트",
+          pattern: "무지",
+          image: "res/흰컨버스.png"
         }
       ];
 

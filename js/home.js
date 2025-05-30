@@ -73,16 +73,27 @@ function renderCloset() {
     let closetList = document.getElementById("closetList");
     closetList.innerHTML = "";
     let sortOrder = document.getElementById("sortOrder").value; //"최신순" 또는 "오래된순"으로 정렬
-    let direction = (sortOrder === "desc") ? "prev" : "next";
 
     let tx = db.transaction("clothes", "readonly"); //render하는 곳이니까
     let store = tx.objectStore("clothes");
-    let request = store.openCursor(null, direction);
+    let request = store.getAll();
 
     request.onsuccess = function () {
-        let cursor = request.result;
-        if (cursor) {
-            let item = cursor.value;
+        let clothes=request.result;
+
+        // 정렬: 최신순이면 id 큰 값부터, 오래된 순이면 id 작은 값부터
+        if (sortOrder == "desc") {
+            clothes.sort(function(a, b) {
+                return b.id - a.id;
+            });
+        } else if (sortOrder == "asc"){
+            clothes.sort(function(a, b) {
+                return a.id - b.id;
+            });
+        }
+
+        for(let i=0; i<clothes.length; i++){
+            let item = clothes[i];
         
             let imgURL = getImageURL(item.image);
 
@@ -103,11 +114,10 @@ function renderCloset() {
             `;
 
             closetList.appendChild(card);
-            cursor.continue(); //다음 항목 반복
-        } else {
+        
+        } 
             deleteClothes();
             editClothes();
-        }
     };
 }
 
@@ -115,8 +125,6 @@ function renderCloset() {
 function renderFilteredCloset() {
     let closetList = document.getElementById("closetList");
     closetList.innerHTML = "";
-
-    let count = 0;
 
     // 선택된 필터 값
     function filter(id) {
@@ -129,15 +137,19 @@ function renderFilteredCloset() {
     let selectedSeason = filter("filterSeason");
     let selectedColor = filter("filterColor");
     let selectedPattern = filter("filterPattern");
+    let sortOrder = document.getElementById("sortOrder").value;
 
     let tx = db.transaction("clothes", "readonly");
     let store = tx.objectStore("clothes");
-    let request = store.openCursor();
+    let request = store.getAll();
 
     request.onsuccess = function () {
-        let cursor = request.result;
-        if (cursor) {
-            let item = cursor.value;
+        let clothes = request.result;
+        let filtered = [];
+
+        // 필터 조건에 맞는 항목 모으기
+        for (let i = 0; i < clothes.length; i++) {
+            let item = clothes[i];
 
             let categoryMatch = (selectedCategory == "" || selectedCategory == item.category);
             let seasonMatch = (selectedSeason == "" || selectedSeason == item.season);
@@ -145,10 +157,29 @@ function renderFilteredCloset() {
             let patternMatch = (selectedPattern == "" || selectedPattern == item.pattern);
 
             if (categoryMatch && seasonMatch && colorMatch && patternMatch) {
+                filtered.push(item);
+            }
+        }
+        // 정렬
+        if (sortOrder === "desc") {
+            filtered.sort(function (a, b) {
+                return b.id - a.id;
+            });
+        } else {
+            filtered.sort(function (a, b) {
+                return a.id - b.id;
+            });
+        }
+
+        if(filtered.length==0){
+            closetList.innerHTML = "<p>해당 조건에 맞는 옷이 없습니다.</p>";
+        } else {
+            for(let i=0; i<filtered.length; i++){
+                let item = filtered[i];
+                let imgURL = getImageURL(item.image);
+        
                 let card = document.createElement("div");
                 card.className = "clothing-card";
-
-                let imgURL = getImageURL(item.image);
 
                 card.innerHTML = `
                     <div class="card-content">
@@ -162,18 +193,11 @@ function renderFilteredCloset() {
                     </div>
                     <button class="delete_bt" data-id="${item.id}">✖</button>
                 `;
-
                 closetList.appendChild(card);
-                count++;
             }
-            cursor.continue();
-        } else {
-            if (count == 0) {
-                closetList.innerHTML = "<p>해당 조건에 맞는 옷이 없습니다.</p>";
-            }
+        }
             deleteClothes();
             editClothes();
-        }
     };
 }
 

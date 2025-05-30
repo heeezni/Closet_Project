@@ -1,6 +1,6 @@
 /* 전체 페이지 기본 설정 */
 body {
-  background-color: #fdf6f0;
+  background-color: #eaeaea;
   font-family: 'Noto Sans KR', sans-serif;
   color: #333;
   margin: 0;
@@ -282,7 +282,7 @@ button:hover {
   margin: 5px;
   border-radius: 8px;
   text-align: center;
-  background-color: #fdfdfd;
+  background-color: #f0f0f0;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
   flex-shrink: 0; /* flex항목 줄어들지 않게 */
 }
@@ -325,7 +325,7 @@ button:hover {
   position: relative; /* 버튼을 카드 기준으로 배치하려면 필요 */
   padding: 20px 10px 10px 10px;
   border-radius: 12px;
-  background: #fff;
+  background: #f0f0f0;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
   flex-shrink: 0;  /* 스크롤 시 줄어들지 않게 */
   scroll-snap-align: start; /* 스냅 맞춤 */
@@ -377,7 +377,8 @@ button:hover {
 }
 
 .slot {
-  background: white;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
   border-radius: 12px;
   padding: 5px;
   min-height: 100px;
@@ -410,7 +411,6 @@ button:hover {
 
 .onepiece {
   grid-area: onepiece;
-  grid-column: 1 / span 2;
   grid-row: 1 / span 2;
 }
 
