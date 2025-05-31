@@ -17,8 +17,8 @@ function initDB(){
     request.onsuccess = function(e){
         db = e.target.result;
         console.log("IndexedDB 연결 성공");
-
-        addExampleData();//발표용 예시데이터
+        
+        //addExampleData();//발표용 예시데이터
     };
     
     request.onerror = function(e){
