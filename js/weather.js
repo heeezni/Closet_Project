@@ -1,5 +1,5 @@
 function weather(){
-    const API_KEY = "5aee4cd036f247a996101102252605";
+    const API_KEY = "";
     const CITY = "Seoul";
     
     fetch(`https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${CITY}`)
