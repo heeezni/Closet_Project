@@ -16,3 +16,6 @@ build/
 
 # 로그 파일
 *.log
+
+# API 키 설정 파일
+js/config.js
